@@ -1,0 +1,7 @@
+*.mp3
+*.webm
+python/__pycache__/*
+playlist.lua
+*.exe
+*.mp4
+*.x86_64

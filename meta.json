@@ -1,0 +1,8 @@
+{
+  "name": "Music Player",
+  "desc": "Ingame music player with a simple library and play/pause system.\nIncluded is a python script to convert your audio into a format compatible with the player.\nPlease report bugs to thisisx_x on discord.\n\n\n\n\n\nIncluded music is copyright free and unlicensed.",
+  "tags": [
+    "Music",
+    "ScriptMod"
+  ]
+}

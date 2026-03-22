@@ -23,15 +23,15 @@ class FFmpegOps: # logic for converting the files using a pre-generated mp4 as t
         else:
             ext = file[:-4]
         badname = any(op in ext for op in ['\'','"','`', " "])
-        "".repla
         while badname:
             print(ext)
             [ext := ext.replace(op,"") for op in ['\'','"','`', " "]]
             badname = any(op in ext for op in ['\'','"','`', " "])
-        cmd = f" -i {file} {ext}_PC.mp3" # PC meansd Post Convert
         if platform.system() == "Linux":
+            cmd = f" -i '../musicConvert/{file}' '../musicConvert/{ext}_PC.mp3'" # PC meansd Post Convert
             cmd = "./ffmpeg.x86_64 " + cmd
         else:
+            cmd = f" -i '..\\musicConvert\\{file}' '..\\musicConvert\\{ext}_PC.mp3'" # PC meansd Post Convert
             cmd = "ffmpeg.exe " + cmd
         os.system(cmd)
 

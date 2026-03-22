@@ -1,4 +1,5 @@
 # Gearblocks Music Player
+the best place to find releases of this mod is on the steam workshop.<br>
 This is a scriptmod for the game [GearBlocks](https://store.steampowered.com/app/1305080/GearBlocks/)<br>
 Included is a python script to convert any audio or video container (mp3, mp4, flac, webm) into a format friendly to the scriptmod, along with the metadata to run the scriptmod with it's bells and whistles.
 # !! IMPORTANT READ ME !!

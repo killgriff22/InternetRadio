@@ -22,7 +22,7 @@ Files with qoutes in their names may not work. try to get rid of all  `'` and `"
 ## The "I've already converted my files and I don't want to again" way
 ### tldr, the haxor way
 * Instead of blindly running main.py, crack it open and use `#` to comment and un comment the FFMpegOps line to enable and disable converting your files.
-* Similarly, you can comment out the last few lines to diable the generation of the playlist.lua
+* Similarly, you can comment out the last few lines to disable the generation of the playlist.lua
 <br>
 <br>
 <br>

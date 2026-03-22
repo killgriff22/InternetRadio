@@ -5,3 +5,5 @@ playlist.lua
 *.exe
 *.mp4
 *.x86_64
+*.zip
+InternetRadio/*

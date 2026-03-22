@@ -10,11 +10,29 @@ Linux: https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-mas
 class FFmpegOps: # logic for converting the files using a pre-generated mp4 as the video source
     def convert_files(input, outputname):
         ichain = " -i "+(' -i '.join(input))
-        cmd = ichain + " -c:v vp8 -c:a vorbis -strict -2 -y " + outputname
+        cmd = ichain + " -c:v vp8 -c:a vorbis -strict -2 -n " + outputname
         if platform.system() == "Linux":
             cmd = "./ffmpeg.x86_64 " + cmd
         else:
-            cmd = "./ffmpeg.exe " + cmd
+            cmd = "ffmpeg.exe " + cmd
+        os.system(cmd)
+    def convert2mp3(file):
+        ext = file[:-3]
+        if not ext[-1] == ".":
+            ext = file[:-5]
+        else:
+            ext = file[:-4]
+        badname = any(op in ext for op in ['\'','"','`', " "])
+        "".repla
+        while badname:
+            print(ext)
+            [ext := ext.replace(op,"") for op in ['\'','"','`', " "]]
+            badname = any(op in ext for op in ['\'','"','`', " "])
+        cmd = f" -i {file} {ext}_PC.mp3" # PC meansd Post Convert
+        if platform.system() == "Linux":
+            cmd = "./ffmpeg.x86_64 " + cmd
+        else:
+            cmd = "ffmpeg.exe " + cmd
         os.system(cmd)
 
 class StreamOps:# code for generating video
@@ -47,7 +65,11 @@ class PlaylistOps: # generate the library files nesscary to pickup tracks
             name = GeneratedFiles[i][:-5]
             track = name
             if name in str(GeneratedFiles):
-                track = ID3(f"../musicConvert/{name}.mp3")['TIT2'].text[0]
+                track = ID3(f"../musicConvert/{name}.mp3")
+                if 'TIT2' in track.keys():
+                    track = track['TIT2'].text[0]
+                else:
+                    track = name
             Playlist += f"        [{i+1}] = [[{track}]],\n"
         Playlist = Playlist[:-2]# remove leading comma
         Playlist += "\n    },\n    lengths = {\n"
@@ -63,8 +85,11 @@ class PlaylistOps: # generate the library files nesscary to pickup tracks
             name = GeneratedFiles[i][:-5]
             artist = "UNKOWN"
             if name in str(GeneratedFiles):
-                artist = ID3(f"../musicConvert/{name}.mp3")['TPE1'].text[0]
-
+                artist = ID3(f"../musicConvert/{name}.mp3")
+                if 'TPE1' in artist.keys():
+                    artist = artist['TPE1'].text[0]
+                else:
+                    artist = "UNKNOWN"
             Playlist += f"        [{i+1}] = [[{artist}]],\n"
         Playlist = Playlist[:-2]# remove leading comma
         Playlist += "\n    },\n    albums = {\n"
@@ -82,36 +107,3 @@ class PlaylistOps: # generate the library files nesscary to pickup tracks
         Playlist += "\n    }\n}"
         print(Playlist)
         return Playlist
-
-
-    def writeValues(DictValues):
-        w = open(InteropPath,"w")
-        w.seek(0)
-        w.write(f"""-- Genertated using python
-    return {"{"}
-        {("".join([f"{k} = '{DictValues[k]}',\n" for k in DictValues.keys()]))[:-2]}
-    {"}"}
-    """)
-        w.close()
-        del w
-
-    def read_for(search, back=100):
-        t = datetime.datetime.now()
-        r = open(LogPath,"r")
-        lines = r.readlines()
-        lines = [line.strip().split("Lua:")[1] if "Lua:" in line else None for line in lines[-back:]]
-        while None in lines:
-            lines.remove(None)
-        for line in lines:
-            if search.lower() in line.lower():
-                bulk = line.split(":")[1:]
-                h,m,s = bulk[-3:]
-                if all(b for b in [
-                    str(t.hour) in h,
-                    str(t.minute) in m,
-                    str(t.second) in s  ]):
-                    data = [bulk[:-3],bulk[-3:]]
-                    return [True, data, line]
-        r.close()
-        del r
-        return [False, None, None]

@@ -10,13 +10,23 @@ from classes import *
 # sanity check.
 print("Frames Generated")
 # generate a 10 minute long video at 24 fps. change the minutes variable to change the length of the video used.
-minutes = 10
+#minutes = 10
 #StreamOps.generate_video(minutes*60,24)
 print("Video Created")
+
+#convert everything to a sane format before converting into webms
+for file in os.listdir("../musicConvert/"):
+    if not "_PC.mp3" in file:
+        FFmpegOps.convert2mp3(file)
+        os.remove(file)
+print("Pre Processing complete!")
+
+#convert everything in the musicConvert folder to the gearblocks freiendly webm
 for file in os.listdir("../musicConvert/"):
     name = file[:-4]
-    FFmpegOps.convert_files([f"'../musicConvert/{file}'", 'video.mp4'],f"'../music/{name}.webm'")
-Playlist = PlaylistOps.GeneratePlaylist()
-with open("../playlist.lua","w") as f:
-    f.write(Playlist)
+    if platform.system() == "Linux":
+        FFmpegOps.convert_files([f"\"../musicConvert/{file}\"", "video.mp4"],f"\"../music/{name}.webm\"")
+    else:
+        FFmpegOps.convert_files([f"\"..\\musicConvert/{file}\"", "video.mp4"],f"\"..\\music\\{name}.webm\"")
+PlaylistOps.GeneratePlaylist()
 exit()

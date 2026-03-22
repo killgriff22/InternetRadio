@@ -18,6 +18,7 @@ local WindowHeight = ButtonHeight*(items+1)
 local RootWindow = WindowMan.CreateWindow(WindowHeight, WindowWidth, WindowMan.GenericOnWindowClose, 40,40)
 local DebugValuesShow = true
 local itemindex = 0
+local LibraryRootWin
 
 
 local function randnum(max)
@@ -25,6 +26,11 @@ local function randnum(max)
 end
 local function LoadFile(filename)
     ---@diagnostic disable-next-line: param-type-mismatch
+    if _VideoPlayer.IsPlaying then
+        _VideoPlayer.Stop()
+        VideoPlayers.ReleasePlayer(_VideoPlayer)
+        _VideoPlayer = VideoPlayers.CreatePlayer()
+    end
     _VideoPlayer.Load(filename, true)
     _VideoPlayer.Play()
 end
@@ -48,7 +54,10 @@ end
 
 local function spawnPlaylistMenu()
     local LibraryMenu = loadfile(ScriptPath.."PlaylistMenu.lua")()
-    LibraryMenu.SpawnWindow(Play)
+    if LibraryRootWin then
+        WindowMan.DestroyWindow(LibraryRootWin)
+    end
+    LibraryRootWin = LibraryMenu.SpawnWindow(Play)
 end
 
 
@@ -131,9 +140,10 @@ end
 local lasttime = os.time()
 function Update()
     local time = os.time()
-    local humanReadable_starttime = math.floor((starttime - 1774130000)/1)
-    local humanReadable_time = math.floor((time - 1774130000)/1)
-    local humanReadable_endtime = math.floor((endtime - 1774130000)/1)
+    local timeOffset = math.floor(time/10000)*10000
+    local humanReadable_starttime = math.floor((starttime - timeOffset)/1)
+    local humanReadable_time = math.floor((time - timeOffset)/1)
+    local humanReadable_endtime = math.floor((endtime - timeOffset)/1)
     local humanReadable_timeelapsed = math.floor((timeelapsed)/1)
     local humanReadable_timeremaining = math.floor((timeremaining)/1)
     if DebugValuesShow then
@@ -157,6 +167,9 @@ end
 
 function Cleanup()
     WindowMan.DestroyWindow(RootWindow)
+    if LibraryRootWin then
+        WindowMan.DestroyWindow(LibraryRootWin)
+    end
     VideoPlayers.ReleasePlayer(_VideoPlayer)
 end
 

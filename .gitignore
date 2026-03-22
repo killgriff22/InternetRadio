@@ -1,4 +1,5 @@
 *.mp3
+*.m4a
 *.webm
 python/__pycache__/*
 playlist.lua

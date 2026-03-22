@@ -8,6 +8,8 @@ CONVERT = True
 GENERATE_PLAYLIST = True
 GENERATE_FRAME = False
 GENERATE_VIDEO = False
+GENERATE_INDIVIDUAL_VIDEOS = True
+minutes = 10
 
 
 
@@ -36,7 +38,6 @@ if GENERATE_FRAME:
     print("Frames Generated")
 # generate a 10 minute long video at 24 fps. change the minutes variable to change the length of the video used.
 if GENERATE_VIDEO:
-    minutes = 10
     StreamOps.generate_video(minutes*60,24)
     print("Video Created")
 
@@ -46,13 +47,18 @@ if PRE_CONVERT:
     #convert everything to a sane format before converting into webms
     for file in os.listdir("../musicConvert/"):
         if not "_PC.mp3" in file:
-            FFmpegOps.convert2mp3(file)
+            FFmpegOps.convert2ogg(file)
             os.remove(f"../musicConvert/{file}")
     print("Pre Processing complete!")
 if CONVERT:
     #convert everything in the musicConvert folder to the gearblocks freiendly webm
     for file in os.listdir("../musicConvert/"):
         name = file[:-4]
+        if not ("_PC.mp3" in file):
+            continue
+        length = int(MP3(f"../musicConvert/{file}").info.length//1)
+        if GENERATE_INDIVIDUAL_VIDEOS:
+            StreamOps.generate_video(length, 24)
         if platform.system() == "Linux":
             FFmpegOps.convert_files([f"\"../musicConvert/{file}\"", "video.mp4"],f"\"../music/{name}.webm\"")
         else:

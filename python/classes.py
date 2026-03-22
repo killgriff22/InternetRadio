@@ -16,7 +16,7 @@ class FFmpegOps: # logic for converting the files using a pre-generated mp4 as t
         else:
             cmd = "ffmpeg.exe " + cmd
         os.system(cmd)
-    def convert2mp3(file):
+    def convert2ogg(file):
         ext = file[:-3]
         if not ext[-1] == ".":
             ext = file[:-5]
@@ -25,13 +25,13 @@ class FFmpegOps: # logic for converting the files using a pre-generated mp4 as t
         badname = any(op in ext for op in ['\'','"','`', " "])
         while badname:
             print(ext)
-            [ext := ext.replace(op,"") for op in ['\'','"','`', " "]]
-            badname = any(op in ext for op in ['\'','"','`', " "])
+            [ext := ext.replace(op,"") for op in ['\'','"','`', " ","[","]"]]
+            badname = any(op in ext for op in ['\'','"','`', " ","[","]"])
         if platform.system() == "Linux":
-            cmd = f" -i '../musicConvert/{file}' '../musicConvert/{ext}_PC.mp3'" # PC meansd Post Convert
+            cmd = f" -i '../musicConvert/{file}' -strict -2 '../musicConvert/{ext}_PC.mp3'" # PC meansd Post Convert
             cmd = "./ffmpeg.x86_64 " + cmd
         else:
-            cmd = f" -i '..\\musicConvert\\{file}' '..\\musicConvert\\{ext}_PC.mp3'" # PC meansd Post Convert
+            cmd = f" -i '..\\musicConvert\\{file}' -strict -2 '..\\musicConvert\\{ext}_PC.mp3'" # PC meansd Post Convert
             cmd = "ffmpeg.exe " + cmd
         os.system(cmd)
 
@@ -64,7 +64,7 @@ class PlaylistOps: # generate the library files nesscary to pickup tracks
         for i in range(len(GeneratedFiles)):
             name = GeneratedFiles[i][:-5]
             track = name
-            if name in str(GeneratedFiles):
+            if name in str(os.listdir("../musicConvert")):
                 track = ID3(f"../musicConvert/{name}.mp3")
                 if 'TIT2' in track.keys():
                     track = track['TIT2'].text[0]
@@ -76,7 +76,7 @@ class PlaylistOps: # generate the library files nesscary to pickup tracks
         for i in range(len(GeneratedFiles)):
             name = GeneratedFiles[i][:-5]
             length = 10*60
-            if name in str(GeneratedFiles):
+            if name in str(os.listdir("../musicConvert")):
                 length = int(MP3(f"../musicConvert/{name}.mp3").info.length//1)
             Playlist += f"        [{i+1}] = {length},\n"
         Playlist = Playlist[:-2]# remove leading comma
@@ -84,7 +84,7 @@ class PlaylistOps: # generate the library files nesscary to pickup tracks
         for i in range(len(GeneratedFiles)):
             name = GeneratedFiles[i][:-5]
             artist = "UNKOWN"
-            if name in str(GeneratedFiles):
+            if name in str(os.listdir("../musicConvert")):
                 artist = ID3(f"../musicConvert/{name}.mp3")
                 if 'TPE1' in artist.keys():
                     artist = artist['TPE1'].text[0]
@@ -96,7 +96,7 @@ class PlaylistOps: # generate the library files nesscary to pickup tracks
         for i in range(len(GeneratedFiles)):
             name = GeneratedFiles[i][:-5]
             album = "UNKOWN"
-            if name in str(GeneratedFiles):
+            if name in str(os.listdir("../musicConvert")):
                 album = ID3(f"../musicConvert/{name}.mp3")
                 if 'TALB' in list(album.keys()):
                     album = album["TALB"].text[0]

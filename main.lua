@@ -4,6 +4,7 @@ local WindowMan = require("WindowMan")
 local _VideoPlayer = VideoPlayers.CreatePlayer()
 local starttime = os.time()
 local endtime = os.time()*2
+local ExecutionTime = os.time()
 local PlayRandom
 local timeremaining = 0
 local timeelapsed = 0
@@ -16,7 +17,7 @@ local ButtonHeight = 30
 local items = 6
 local WindowHeight = ButtonHeight*(items+1)
 local RootWindow = WindowMan.CreateWindow(WindowHeight, WindowWidth, WindowMan.GenericOnWindowClose, 40,40)
-local DebugValuesShow = true
+local DebugValuesShow = false
 local itemindex = 0
 local LibraryRootWin
 
@@ -139,15 +140,20 @@ end
 
 local lasttime = os.time()
 function Update()
+    if Input.GetKeyDown("f10") then
+        DebugValuesShow = not DebugValuesShow
+        DebugValuesLabel.IsVisible = DebugValuesShow
+    end
     local time = os.time()
-    local timeOffset = math.floor(time/10000)*10000
-    local humanReadable_starttime = math.floor((starttime - timeOffset)/1)
-    local humanReadable_time = math.floor((time - timeOffset)/1)
-    local humanReadable_endtime = math.floor((endtime - timeOffset)/1)
-    local humanReadable_timeelapsed = math.floor((timeelapsed)/1)
-    local humanReadable_timeremaining = math.floor((timeremaining)/1)
     if DebugValuesShow then
-        DebugValuesLabel.Text = "".. trackid .. " : " .. humanReadable_starttime .. " : " .. humanReadable_endtime .. " : " .. humanReadable_time .. " : " .. humanReadable_timeelapsed  .. " : " .. humanReadable_timeremaining .. " : " .. (humanReadable_endtime - humanReadable_starttime) ..""
+        local timeOffset = math.floor(time/10000)*10000
+        local humanReadable_starttime = math.floor((starttime - timeOffset)/1)
+        local humanReadable_time = math.floor((time - timeOffset)/1)
+        local humanReadable_endtime = math.floor((endtime - timeOffset)/1)
+        local humanReadable_timeelapsed = math.floor((timeelapsed)/1)
+        local humanReadable_timeremaining = math.floor((timeremaining)/1)
+        local TimeExecuted = math.floor(time-ExecutionTime)
+        DebugValuesLabel.Text = "".. trackid .. " : " .. humanReadable_starttime .. " : " .. humanReadable_endtime .. " : " .. humanReadable_time .. " : " .. humanReadable_timeelapsed  .. " : " .. humanReadable_timeremaining .. " : " .. (humanReadable_endtime - humanReadable_starttime) .. " : " .. TimeExecuted ..""
     end
     if time ~= lasttime then
         math.randomseed(time)
@@ -162,6 +168,7 @@ function Update()
     if V > 1 then
         NextTrack()
     end
+
 end
 
 

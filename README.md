@@ -10,7 +10,7 @@ If you're on linux and experiencing difficulty with ffmpeg, you may need to give
 # Converting files!
 * Make sure you have a recent version of Python 3<br>
 [Windows](https://www.python.org/ftp/python/3.13.12/python-3.13.12-amd64.exe)
-* run the setup script for your os<br>
+* Run the setup script for your os<br>
 Windows: setup.bat<br>
 Linux: setup.sh
 * Delete everything in the musicConvert and music folders
